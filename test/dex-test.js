@@ -31,7 +31,7 @@ describe("Dex", function () {
         [owner, addr1, addr2, addr3, addr4, addr5] = await ethers.getSigners();
         [trader1, trader2] = [addr1, addr2];
         //Assign balance to each trader
-        const amount = web3.utils.toWei("1000");
+        const amount = ethers.utils.parseEther("1000");
         const seedTokenBalance = async (token, trader) => {
             await token.faucet(trader.address, amount);
             await token.connect(trader).approve(
@@ -51,36 +51,36 @@ describe("Dex", function () {
         );
     });
     it("should deposit tokens", async function () {
-        const amount = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("100");
         await dex.connect(trader1).deposit(DAI, amount);
         const balance = await dex.traderBalances(trader1.address, DAI);
         expect(balance.toString()).to.equal(amount);
     })
     it("should NOT deposit tokens if token dosn't exist", async function () {
-        const amount = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("100");
         await expect(
             dex.connect(trader1).deposit(NEX, amount)
         ).to.be.revertedWith("This token dosn't exist.")
     })
     it("should withdraw tokens", async function () {
-        const amount = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("100");
         await dex.connect(trader1).deposit(DAI, amount);
         await dex.connect(trader1).withdraw(DAI, amount);
         const balanceDex = await dex.traderBalances(trader1.address, DAI);
         const balanceDai = await dai.balanceOf(trader1.address)
         expect(balanceDex.toString()).to.equal("0");
-        expect(balanceDai.toString()).to.equal(web3.utils.toWei("1000"))
+        expect(balanceDai.toString()).to.equal(ethers.utils.parseEther("1000"))
     })
     it("should NOT withdraw tokens if token does not exist", async function () {
-        const amount = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("100");
         await dex.connect(trader1).deposit(DAI, amount);
         await expect(
             dex.connect(trader1).withdraw(NEX, amount)
         ).to.be.revertedWith("This token dosn't exist.")
     })
     it("should NOT withdraw tokens if balance is too low", async function () {
-        const amountDeposit = web3.utils.toWei("10");
-        const amountWithdraw = web3.utils.toWei("100")
+        const amountDeposit = ethers.utils.parseEther("10");
+        const amountWithdraw = ethers.utils.parseEther("100")
         await dex.connect(trader1).deposit(DAI, amountDeposit);
         await expect(
             dex.connect(trader1).withdraw(DAI, amountWithdraw)
@@ -88,8 +88,8 @@ describe("Dex", function () {
     })
     it("should create a limit order", async function () {
         //First
-        const amount = web3.utils.toWei("100");
-        const amountOrder = web3.utils.toWei("10");
+        const amount = ethers.utils.parseEther("100");
+        const amountOrder = ethers.utils.parseEther("10");
         await dex.connect(trader1).deposit(DAI, amount);
         await dex.connect(trader1).createLimitOrder(REP, amountOrder, 10, SIDE.BUY);
         const ordersBuy = await dex.getOrders(REP, SIDE.BUY);
@@ -100,7 +100,7 @@ describe("Dex", function () {
         expect(ordersBuy[0].filled).to.equal(0);
         expect(ordersBuy[0].price).to.equal(10);
         //Second
-        const amount2 = web3.utils.toWei("200");
+        const amount2 = ethers.utils.parseEther("200");
         await dex.connect(trader2).deposit(DAI, amount2);
         await dex.connect(trader2).createLimitOrder(REP, amountOrder, 11, SIDE.BUY);
         const ordersBuy2 = await dex.getOrders(REP, SIDE.BUY);
@@ -112,39 +112,39 @@ describe("Dex", function () {
         expect(ordersBuy2[0].price).to.equal(11);
     })
     it("should NOT create a limit order if the token dosn't exist", async function () {
-        const amount = web3.utils.toWei("100");
-        const amountOrder = web3.utils.toWei("10");
+        const amount = ethers.utils.parseEther("100");
+        const amountOrder = ethers.utils.parseEther("10");
         await dex.connect(trader1).deposit(DAI, amount);
         await expect(
             dex.connect(trader1).createLimitOrder(NEX, amountOrder, 10, SIDE.BUY)
         ).to.be.revertedWith("This token dosn't exist.")
     })
     it("should NOT create a limit order if the token balance is too low", async function () {
-        const amount = web3.utils.toWei("10");
-        const amountOrder = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("10");
+        const amountOrder = ethers.utils.parseEther("100");
         await dex.connect(trader1).deposit(REP, amount);
         await expect(
             dex.connect(trader1).createLimitOrder(REP, amountOrder, 10, SIDE.SELL)
         ).to.be.revertedWith("Token balance too low.")
     })
     it("should NOT create a limit order if token is DAI", async function () {
-        const amountOrder = web3.utils.toWei("10");
+        const amountOrder = ethers.utils.parseEther("10");
         await expect(
             dex.connect(trader1).createLimitOrder(DAI, amountOrder, 10, SIDE.BUY)
         ).to.be.revertedWith("Cannot trade DAI")
     })
     it("should NOT create a limit order is the DAI balance is too low", async function () {
-        const amount = web3.utils.toWei("100");
-        const amountOrder = web3.utils.toWei("10");
+        const amount = ethers.utils.parseEther("100");
+        const amountOrder = ethers.utils.parseEther("10");
         await dex.connect(trader1).deposit(DAI, amount);
         await expect(
             dex.connect(trader1).createLimitOrder(REP, amountOrder, 20, SIDE.BUY)
         ).to.be.revertedWith("DAI balance too low.")
     })
     it("should create market order and match against existing limit order", async function () {
-        const amount = web3.utils.toWei("100");
-        const amountOrder = web3.utils.toWei("10");
-        const amountOrder2 = web3.utils.toWei("5");
+        const amount = ethers.utils.parseEther("100");
+        const amountOrder = ethers.utils.parseEther("10");
+        const amountOrder2 = ethers.utils.parseEther("5");
         await dex.connect(trader1).deposit(DAI, amount);
         await dex.connect(trader1).createLimitOrder(REP, amountOrder, 10, SIDE.BUY);
         await dex.connect(trader2).deposit(REP, amount);
@@ -155,36 +155,36 @@ describe("Dex", function () {
         const balanceTrader2Rep = await dex.traderBalances(trader2.address, REP);
         const ordersBuy = await dex.getOrders(REP, SIDE.BUY);
         expect(ordersBuy[0].side).to.equal(0);
-        expect(ordersBuy[0].filled).to.equal(web3.utils.toWei("5"));
-        expect(balanceTrader1Dai.toString()).to.equal(web3.utils.toWei("50"));
-        expect(balanceTrader1Rep.toString()).to.equal(web3.utils.toWei("5"));
-        expect(balanceTrader2Dai.toString()).to.equal(web3.utils.toWei("50"));
-        expect(balanceTrader2Rep.toString()).to.equal(web3.utils.toWei("95"));
+        expect(ordersBuy[0].filled).to.equal(ethers.utils.parseEther("5"));
+        expect(balanceTrader1Dai.toString()).to.equal(ethers.utils.parseEther("50"));
+        expect(balanceTrader1Rep.toString()).to.equal(ethers.utils.parseEther("5"));
+        expect(balanceTrader2Dai.toString()).to.equal(ethers.utils.parseEther("50"));
+        expect(balanceTrader2Rep.toString()).to.equal(ethers.utils.parseEther("95"));
         
     })
     it("should NOT create market order if token dosn't exist", async function () {
-        const amount = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("100");
         await expect(
             dex.createMarketOrder(NEX, amount, SIDE.BUY)
         ).to.be.revertedWith("This token dosn't exist.")
     })
     it("should NOT create maker order if token is DAI", async function () {
-        const amount = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("100");
         await expect(
             dex.createMarketOrder(DAI, amount, SIDE.BUY)
         ).to.be.revertedWith("Cannot trade DAI")
     })
     it("shoudl NOT create market order if token balance is too low", async function () {
-        const amount = web3.utils.toWei("99");
-        const amountOrder = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("99");
+        const amountOrder = ethers.utils.parseEther("100");
         await dex.connect(trader1).deposit(DAI, amount);
         await expect(
             dex.createMarketOrder(REP, amountOrder, SIDE.SELL)
         ).to.be.revertedWith("Token balance too low.")
     })
     it("should NOT create market order if DAI balance is too low", async function () {
-        const amount = web3.utils.toWei("100");
-        const amountOrder = web3.utils.toWei("100");
+        const amount = ethers.utils.parseEther("100");
+        const amountOrder = ethers.utils.parseEther("100");
         await dex.connect(trader1).deposit(REP, amount);
         await dex.connect(trader1).createLimitOrder(REP, amountOrder, 10, SIDE.SELL);
         await expect(

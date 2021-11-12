@@ -19,7 +19,7 @@ const getBlockchain = () =>
                 const tokens = await dex.getTokens();
                 const tokenContracts = tokens.reduce((acc, token) => ({
                     ...acc,
-                    [Web3.utils.hexToUtf8(token.ticker)]: new Contract(
+                    [ethers.utils.toUtf8String(token.ticker)]: new Contract(
                         token.tokenAddress,
                         ERC20Abi,
                         signer
