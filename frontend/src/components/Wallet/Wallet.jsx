@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ethers from "ethers";
+import {ethers} from "ethers";
 import styled from "styled-components";
 import WalletText from "../Texts/Wallet/WalletText";
 import WalletTokenText from "../Texts/Wallet/WalletTokenText";

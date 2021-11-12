@@ -1,5 +1,5 @@
 import React from "react";
-import ethers from "ethers";
+import {ethers} from "ethers";
 import styled from "styled-components";
 import SelectToken from "../SelectToken/SelectToken";
 import TokenSelectedText from "../Texts/Header/TokenSelectedText";
