@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Web3 from "web3";
 import styled from "styled-components";
 import getBlockchain from "./ethereum";
 import Loading from "../src/components/Loading/Loading";
@@ -29,7 +28,7 @@ function App() {
   })
 
   const getBalances = async (account, token) => {
-    const tokenName = Web3.utils.hexToUtf8(token)
+    const tokenName = ethers.utils.toUtf8String(token)
     const tokenDex = await contracts.dex
       .traderBalances(account, token);
     let tokenWallet;
@@ -79,7 +78,7 @@ function App() {
   }
   
   const deposit = async (amount) => {
-    await contracts[Web3.utils.hexToUtf8(tokens[tokenSelected].ticker)]
+    await contracts[ethers.utils.toUtf8String(tokens[tokenSelected].ticker)]
       .approve(contracts.dex.address, amount)
     await contracts.dex
       .connect(contracts.signer)
@@ -161,7 +160,7 @@ function App() {
               createLimitOrder={createLimitOrder}
             />
           </LeftDiv>
-          {Web3.utils.hexToUtf8(tokens[tokenSelected].ticker) !== "DAI" ? 
+          {ethers.utils.toUtf8String(tokens[tokenSelected].ticker) !== "DAI" ? 
             <RightDiv>
               <AllTrades 
                 tokens={tokens}
