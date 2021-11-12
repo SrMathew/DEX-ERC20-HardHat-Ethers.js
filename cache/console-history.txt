@@ -1,0 +1,2 @@
+foo
+const foo = ethers.utils.toUtf8String('0x49206861766520313030e282ac')
