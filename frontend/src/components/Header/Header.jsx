@@ -1,5 +1,5 @@
 import React from "react";
-import Web3 from "web3";
+import ethers from "ethers";
 import styled from "styled-components";
 import SelectToken from "../SelectToken/SelectToken";
 import TokenSelectedText from "../Texts/Header/TokenSelectedText";
@@ -17,7 +17,7 @@ function Header({tokens, tokenSelected, setTokenSelected}) {
             {tokenSelected !== "none" ? 
                 <TextDiv>
                     <TokenSelectedText 
-                        text={Web3.utils.hexToUtf8(tokens[tokenSelected].ticker)}
+                        text={ethers.utils.toUtf8String(tokens[tokenSelected].ticker)}
                     />
                     <ContractAddressText 
                         text={"Contract Address: "}

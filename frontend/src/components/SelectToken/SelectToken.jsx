@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Web3 from "web3";
+import ethers from "ethers";
 
 function SelectToken({tokens, tokenSelected, setTokenSelected}) {
 
@@ -13,7 +13,7 @@ function SelectToken({tokens, tokenSelected, setTokenSelected}) {
             <Select defaultValue="none" value={tokenSelected} onChange={handleSelectChange}>
                 <option value="none">Choose token</option>
                 {tokens && tokens.map((token, index) => 
-                    <option key={index} value={index}>{Web3.utils.hexToUtf8(token.ticker)}</option>
+                    <option key={index} value={index}>{ethers.utils.toUtf8String(token.ticker)}</option>
                 )}
             </Select> 
         </MainDiv>

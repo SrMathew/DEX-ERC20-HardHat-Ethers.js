@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Web3 from "web3";
+import ethers from "ethers";
 import styled from "styled-components";
 import WalletText from "../Texts/Wallet/WalletText";
 import WalletTokenText from "../Texts/Wallet/WalletTokenText";
@@ -39,7 +39,7 @@ function Wallet({tokens, tokenSelected, getBalances, user, setUser, deposit, wit
             </TitleDiv>
             <TextDiv>
                 <WalletTokenText 
-                    text={Web3.utils.hexToUtf8(tokens[tokenSelected].ticker)}
+                    text={ethers.utils.toUtf8String(tokens[tokenSelected].ticker)}
                 />
             </TextDiv>
             <div>
@@ -62,7 +62,7 @@ function Wallet({tokens, tokenSelected, getBalances, user, setUser, deposit, wit
             </div>
             <TextDiv>
                 <TransferTokenText 
-                    text={Web3.utils.hexToUtf8(tokens[tokenSelected].ticker)}
+                    text={ethers.utils.toUtf8String(tokens[tokenSelected].ticker)}
                 />
             </TextDiv>
             <div>
