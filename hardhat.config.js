@@ -7,10 +7,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     console.log(account.address);
   }
 });
-// task action function receives the Hardhat Runtime Environment as second argument
-task("accountsweb3", "Prints accounts", async (_, { web3 }) => {
-  console.log(await web3.eth.getAccounts());
-});
+
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
