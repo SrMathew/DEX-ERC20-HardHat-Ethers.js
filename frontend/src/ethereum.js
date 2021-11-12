@@ -1,5 +1,4 @@
 import { ethers, Contract } from "ethers";
-import Web3 from "web3";
 import Contracts from "./Contracs.json";
 import ERC20Abi from "./ERC20Abi.json"
 

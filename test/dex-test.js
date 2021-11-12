@@ -1,11 +1,11 @@
 const { expect } = require("chai");
-const { ethers, web3 } = require("hardhat");
+const { ethers} = require("hardhat");
 
 describe("Dex", function () {
     let Dex, Bat, Dai, Rep, Zrx;
     let dex, bat, dai, rep, zrx;
     let trader1, trader2;
-    const [DAI, BAT, REP, ZRX, NEX] = ["DAI", "BAT", "REP", "ZRX", "NEX"].map(ticker => web3.utils.asciiToHex(`${ticker}\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`)); 
+    const [DAI, BAT, REP, ZRX, NEX] = ["DAI", "BAT", "REP", "ZRX", "NEX"].map(ticker => ethers.utils.formatBytes32String(`${ticker}\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0`)); 
     // \0 porque le faltaban 58 caracteres para que lo considere un bytes32 valido
     const SIDE = {
         BUY: 0,
